@@ -26,6 +26,7 @@ bool isInteger(char *s) {
 	return true;
 }
 
+
 bool isNumber(char* s) {
 	// 空串，直接返回false
 	if (s[0] == '\0') {
@@ -38,20 +39,18 @@ bool isNumber(char* s) {
 	}
 
 	int idx = 0;
-	int first = 0;
+	int first = -1;  // 第一个数字的index
 	int dot = -1;
 	// 检查第一个字符，只能是+/-/./数字
 	// if (!(s[0] >= '0' && s[0] <= '9') && s[0] != '.' && s[0] != '+' && s[0] != '-') {
 	// 	return false;
 	// }
 	if (s[idx] >= '0' && s[idx] <= '9') {
-		// do nothing
+		first = idx;
 	} else if (s[idx] == '.') {
-		first = idx + 1;
-		idx = idx + 1;
 		dot = idx;
+		idx = idx + 1;
 	} else if (s[idx] == '+' || s[idx] == '-') {
-		first = idx + 1;
 		idx = idx + 1;
 	} else {
 		return false;
@@ -69,12 +68,16 @@ bool isNumber(char* s) {
 			}
 		} else if (s[idx] == 'e' || s[idx] == 'E') {
 			// 这里要判断一下前面的小数是否合法(整数的话不用管)
-			if (idx - dot <= 1 && dot - first <= 1) {
+			if (dot == -1) {
+				if (first != -1) return isInteger(s + idx + 1);
+				else return false;
+			} else if (idx - dot <= 1 && first < 0) {
 				return false;
 			} else {
 				return isInteger(s + idx + 1);
 			}
 		} else if (s[idx] >= '0' && s[idx] <= '9') {
+			first = first >= 0 ? first : idx;
 			idx++;
 			continue;
 		} else {
@@ -84,7 +87,7 @@ bool isNumber(char* s) {
 	}
 
 	// 这里要判断一下前面的小数是否合法(整数的话不用管)
-	if (idx - dot <= 1 && dot - first <= 1) {
+	if (idx - dot <= 1 && first < 0) {
 		return false;
 	} else {
 		return true;
