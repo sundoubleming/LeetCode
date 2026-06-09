@@ -33,11 +33,6 @@ bool isNumber(char* s) {
 		return false;
 	}
 
-	// 单个字符就必须为数字
-	if (strlen(s) == 1 && (s[0] < '0' || s[0] > '9')) {
-		return false;
-	}
-
 	int idx = 0;
 	int first = -1;  // 第一个数字的index
 	int dot = -1;
@@ -71,7 +66,7 @@ bool isNumber(char* s) {
 			if (dot == -1) {
 				if (first != -1) return isInteger(s + idx + 1);
 				else return false;
-			} else if (idx - dot <= 1 && first < 0) {
+			} else if (first < 0) {
 				return false;
 			} else {
 				return isInteger(s + idx + 1);
@@ -87,7 +82,7 @@ bool isNumber(char* s) {
 	}
 
 	// 这里要判断一下前面的小数是否合法(整数的话不用管)
-	if (idx - dot <= 1 && first < 0) {
+	if (first < 0) {
 		return false;
 	} else {
 		return true;
