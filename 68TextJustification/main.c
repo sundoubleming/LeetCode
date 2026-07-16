@@ -13,20 +13,27 @@ char* fullRow(char** words, int wordsSize, int maxWidth, int* offset) {
 	while (end < wordsSize && len + strlen(words[end]) <= maxWidth) {
 		wordsLength += strlen(words[end]);
 		len += strlen(words[end]);
+		++end;
 		// 算一个空格
 		if (len + 1 <= maxWidth) {
 			++len;
 		} else {
 			break;
 		}
-		++end;
 	}
 	// 返回给调用者用户下一次迭代
 	*offset = end;
 
 	int spaceSize = maxWidth - wordsLength;
-	// 不止一个word
-	if (end - start > 1) {
+	// 最后一行
+	if (end == wordsSize) {
+		int roffset = 0;
+		for (int idx = start; idx < end; ++idx) {
+			memcpy(row + roffset, words[idx], strlen(words[idx]));
+			roffset += strlen(words[idx]);
+			++roffset;
+		}
+	} else if (end - start > 1) { // 不止一个word
 		int size = spaceSize / (end - start - 1);
 		int extra = spaceSize % (end - start - 1);
 		int roffset = 0;
